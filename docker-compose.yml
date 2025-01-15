@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+    zooapi01:
+        container_name: zooapi01
+        hostname: zooapi01
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        command: go run github.com/air-verse/air@latest air -c .air.toml
+        healthcheck:
+            test: curl --fail http://localhost:3000/api/v1/ping || exit 1
+            interval: 15s
+            timeout: 15s
+            retries: 3
+        ports:
+            - "3000:3000"
+        restart: unless-stopped
+        volumes:
+            - .:/build
+
+    zoodb:
+        container_name: zoodb
+        hostname: zoodb
+        build:
+            context: .docker/postgresql
+            dockerfile: Dockerfile
+        healthcheck:
+            test: pg_isready -U postgres -h localhost
+            interval: 5s
+            timeout: 5s
+            retries: 10
+        restart: unless-stopped
+        environment:
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_DB: ${DB_DATABASE}
+            PGDATA: /var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        volumes:
+            - .docker/postgresql/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+            - .docker/postgresql/dbdata:/var/lib/postgresql/data
+        command:
+            [
+                "postgres",
+                "-c",
+                "shared_preload_libraries=pg_cron",
+                "-c",
+                "cron.database_name=${DB_DATABASE}",
+                "-c",
+                "default_text_search_config='pg_catalog.portuguese'",
+            ]
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.45"
+                    memory: "250MB"

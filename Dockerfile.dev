@@ -1,0 +1,17 @@
+FROM golang:1.23.3-alpine AS builder
+
+ENV CGO_ENABLED=1  \
+  GOARCH="amd64" \
+  GOOS=linux
+
+WORKDIR /build
+
+COPY . .
+
+RUN apk add --upgrade --no-cache curl bash gcc g++
+
+RUN go mod download && \
+  go install github.com/air-verse/air@latest && \
+  go mod tidy
+
+CMD [ "go", "run", "." ]
