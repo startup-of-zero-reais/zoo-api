@@ -18,19 +18,6 @@ Tenha [Go](https://go.dev/doc/install) instalado
 
 ## Primeiros passos
 
-Comandos disponíveis:
-
-```
-// Faz o build da aplicação
-make build
-
-// Executa a aplicação
-make run
-
-// Para a aplicação
-make stop
-```
-
 Primeiro de tudo execute:
 
 ```
@@ -47,6 +34,19 @@ Ao finalizar o build da aplicação, execute:
 
 ```
 make run
+```
+
+Comandos disponíveis:
+
+```
+// Faz o build da aplicação
+make build
+
+// Executa a aplicação
+make run
+
+// Para a aplicação
+make stop
 ```
 
 ## License
