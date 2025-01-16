@@ -12,6 +12,10 @@
 
 </div>
 
+## Requisitos
+
+Tenha [Go](https://go.dev/doc/install) instalado
+
 ## Primeiros passos
 
 Comandos disponíveis:
