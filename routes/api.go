@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/goravel/framework/facades"
 
-	"goravel/app/http/controllers"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/controllers"
 )
 
 func Api() {

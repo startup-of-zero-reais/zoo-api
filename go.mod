@@ -1,4 +1,4 @@
-module goravel
+module github.com/startup-of-zero-reais/zoo-api
 
 go 1.22.7
 
@@ -10,6 +10,7 @@ require (
 	github.com/goravel/gin v1.3.2
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/grpc v1.69.2
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -184,7 +185,6 @@ require (
 	gorm.io/driver/mysql v1.5.7 // indirect
 	gorm.io/driver/postgres v1.5.11 // indirect
 	gorm.io/driver/sqlserver v1.5.4 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 	gorm.io/plugin/dbresolver v1.5.3 // indirect
 	modernc.org/libc v1.61.6 // indirect
 	modernc.org/mathutil v1.7.1 // indirect

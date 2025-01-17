@@ -1,7 +1,6 @@
 package seeders
 
-type DatabaseSeeder struct {
-}
+type DatabaseSeeder struct{}
 
 // Signature The name and signature of the seeder.
 func (s *DatabaseSeeder) Signature() string {

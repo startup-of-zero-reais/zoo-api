@@ -7,7 +7,7 @@ import (
 
 	"github.com/goravel/framework/facades"
 
-	"goravel/bootstrap"
+	"github.com/startup-of-zero-reais/zoo-api/bootstrap"
 )
 
 func main() {
