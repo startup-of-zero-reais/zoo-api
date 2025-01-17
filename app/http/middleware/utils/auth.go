@@ -66,7 +66,7 @@ func GrantAuth(getUserBySession func(string) (models.User, error)) http.Middlewa
 		}
 
 		payload, err := facades.Auth(ctx).Parse(session.AccessToken)
-		if !errors.Is(err, auth.ErrorTokenExpired) {
+		if err != nil && !errors.Is(err, auth.ErrorTokenExpired) {
 			facades.Log().Errorf("failed to check token: %v", err)
 
 			ctx.Request().AbortWithStatusJson(
