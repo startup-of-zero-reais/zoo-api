@@ -100,7 +100,7 @@ func init() {
 		// the migrations on disk haven't actually been run in the database.
 		// Available Drivers: "default", "sql"
 		"migrations": map[string]any{
-			"driver": "default",
+			"driver": "sql",
 			"table":  "migrations",
 		},
 
