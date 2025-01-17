@@ -12,7 +12,7 @@ type AuthServiceProvider struct{}
 func (receiver *AuthServiceProvider) Register(app foundation.Application) {
 	app.Singleton("google_provider", func(app foundation.Application) (any, error) {
 		return &oauth2.Config{
-			ClientID:     facades.Config().GetString("auth.oauth.google.cliend_id"),
+			ClientID:     facades.Config().GetString("auth.oauth.google.client_id"),
 			ClientSecret: facades.Config().GetString("auth.oauth.google.secret_key"),
 			RedirectURL:  facades.Config().GetString("auth.oauth.google.callback_url"),
 			Scopes: []string{
