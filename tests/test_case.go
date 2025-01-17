@@ -3,7 +3,7 @@ package tests
 import (
 	"github.com/goravel/framework/testing"
 
-	"goravel/bootstrap"
+	"github.com/startup-of-zero-reais/zoo-api/bootstrap"
 )
 
 func init() {

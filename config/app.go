@@ -25,7 +25,7 @@ import (
 	"github.com/goravel/framework/validation"
 	"github.com/goravel/gin"
 
-	"goravel/app/providers"
+	"github.com/startup-of-zero-reais/zoo-api/app/providers"
 )
 
 // Boot Start all init methods of the current folder to bootstrap all config.

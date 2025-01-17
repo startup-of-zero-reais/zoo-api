@@ -3,7 +3,7 @@ package bootstrap
 import (
 	"github.com/goravel/framework/foundation"
 
-	"goravel/config"
+	"github.com/startup-of-zero-reais/zoo-api/config"
 )
 
 func Boot() {
