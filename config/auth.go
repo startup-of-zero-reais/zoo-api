@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	"github.com/goravel/framework/facades"
 )
 
@@ -32,5 +34,28 @@ func init() {
 				"driver": "jwt",
 			},
 		},
+
+		"oauth": map[string]any{
+			"google": map[string]any{
+				"client_id":    config.Env("GOOGLE_CLIENT_ID", ""),
+				"secret_key":   config.Env("GOOGLE_SECRET_KEY", ""),
+				"callback_url": config.Env("GOOGLE_REDIRECT_URL", "http://localhost:8080/api/v1/auth/callback"),
+			},
+		},
+
+		"token_key": getSessionToken(),
 	})
+}
+
+const (
+	SESSION_TOKEN        = "session_token"
+	SECURE_SESSION_TOKEN = "__Secure-session_token"
+)
+
+func getSessionToken() string {
+	if env := os.Getenv("ENVIRONMENT"); env == "production" {
+		return SECURE_SESSION_TOKEN
+	}
+
+	return SESSION_TOKEN
 }
