@@ -1,9 +1,8 @@
 package user
 
 import (
-	"fmt"
-
 	"github.com/goravel/framework/facades"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/responses"
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
 )
 
@@ -19,11 +18,11 @@ func (u *userImpl) GetByID(userID string) (models.User, error) {
 		facades.Log().
 			Hint("failed to get user by id").
 			Error(err)
-		return user, fmt.Errorf("failed to get user by id")
+		return user, responses.ErrUnhandledPgError
 	}
 
 	if user.ID == "" {
-		return user, fmt.Errorf("user not found")
+		return user, responses.ErrUserNotFound
 	}
 
 	return user, nil

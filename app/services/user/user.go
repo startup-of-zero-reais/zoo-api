@@ -1,8 +1,12 @@
 package user
 
-import "github.com/startup-of-zero-reais/zoo-api/app/models"
+import (
+	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
+	"github.com/startup-of-zero-reais/zoo-api/app/models"
+)
 
 type User interface {
+	Create(requests.CreateUser) (models.User, error)
 	GetByID(string) (models.User, error)
 }
 
