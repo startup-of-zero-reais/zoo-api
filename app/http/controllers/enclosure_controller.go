@@ -34,3 +34,14 @@ func (r *EnclosureController) Store(ctx http.Context) http.Response {
 
 	return ctx.Response().Success().Json(enclosure)
 }
+
+func (r *EnclosureController) Index(ctx http.Context) http.Response {
+	identification := ctx.Request().Query("identification")
+
+	total, enclosures, err := r.EnclosureService.List(identification)
+	if err != nil {
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Success().Json(http.Json{"total": total, "enclosures": enclosures})
+}
