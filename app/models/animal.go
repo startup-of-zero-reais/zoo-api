@@ -15,7 +15,8 @@ type Animal struct {
 	MarkType    MarkTypeStatus `gorm:"column:mark_type;default:wahser;" json:"mark_type"`
 	MarkNumber  string         `gorm:"column:mark_number" json:"mark_number"`
 	LandingAt   time.Time      `gorm:"column:landing_at" json:"landing_at"`
-	Age         int64          `gorm:"column:age" json:"age"`
+	Origin      string         `gorm:"column:origin" json:"origin"`
+	Age         time.Time      `gorm:"column:age" json:"age"`
 	SpeciesId   string         `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
 	EnclosureId string         `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/goravel/framework/session/middleware"
 
 	"github.com/startup-of-zero-reais/zoo-api/app/http/controllers"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/animal"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/enclosure"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/species"
 
@@ -52,6 +53,8 @@ func authRoutes(authController *controllers.AuthController) func(route.Router) {
 		router.Group(enclosureRoutes())
 
 		router.Group(speciesRoutes())
+
+		router.Group(animalRoutes())
 	}
 }
 
@@ -70,5 +73,13 @@ func speciesRoutes() func(route.Router) {
 	return func(router route.Router) {
 		router.Middleware(species.Validate()).Post("/species", speciesController.Create)
 		router.Get("/species", speciesController.Index)
+	}
+}
+
+func animalRoutes() func(route.Router) {
+	animalController := controllers.NewAnimalController()
+
+	return func(router route.Router) {
+		router.Middleware(animal.Validate()).Post("/animals", animalController.Store)
 	}
 }

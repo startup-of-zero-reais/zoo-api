@@ -8,7 +8,7 @@ CREATE TABLE animals (
   mark_number INTEGER NOT NULL,
   landing_at TIMESTAMP NOT NULL,
   origin VARCHAR(255) NOT NULL,
-  age INTEGER NOT NULL,
+  age TIMESTAMP NOT NULL,
   species_id UUID NOT NULL,
   enclosure_id UUID NOT NULL,
   
