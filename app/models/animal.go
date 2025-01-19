@@ -5,7 +5,7 @@ import "time"
 type MarkTypeStatus string
 
 const (
-	Washer    MarkTypeStatus = "wahser"
+	Washer    MarkTypeStatus = "washer"
 	Microchip MarkTypeStatus = "microchip"
 )
 
@@ -17,8 +17,8 @@ type Animal struct {
 	LandingAt   time.Time      `gorm:"column:landing_at" json:"landing_at"`
 	Origin      string         `gorm:"column:origin" json:"origin"`
 	Age         time.Time      `gorm:"column:age" json:"age"`
-	SpeciesId   string         `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
-	EnclosureId string         `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
+	SpeciesID   string         `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
+	EnclosureID string         `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
 }
 
 func (Animal) TableName() string {
