@@ -14,6 +14,7 @@ func (e enclosureImpl) Create(er requests.CreateEnclosure) (models.Enclosure, er
 
 	err := facades.Orm().Query().Create(&enclosure)
 	if err != nil {
+		facades.Log().Errorf("failed to create enclosure %v", err)
 		return models.Enclosure{}, responses.ErrUnhandledPgError
 	}
 
