@@ -69,5 +69,6 @@ func speciesRoutes() func(route.Router) {
 
 	return func(router route.Router) {
 		router.Middleware(species.Validate()).Post("/species", speciesController.Create)
+		router.Get("/species", speciesController.Index)
 	}
 }
