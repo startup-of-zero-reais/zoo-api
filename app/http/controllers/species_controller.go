@@ -31,3 +31,22 @@ func (r *SpeciesController) Create(ctx http.Context) http.Response {
 
 	return ctx.Response().Success().Json(result)
 }
+
+func (r *SpeciesController) Index(ctx http.Context) http.Response {
+	var se requests.SearchSpecies
+
+	err := ctx.Request().BindQuery(&se)
+	if err != nil {
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
+	}
+
+	total, species, err := r.Species.List(se)
+	if err != nil {
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Success().Json(http.Json{
+		"total":   total,
+		"species": species,
+	})
+}
