@@ -9,14 +9,13 @@ import (
 
 func (s *SpeciesImpl) List(se requests.SearchSpecies) (int64, []models.Species, error) {
 	var species []models.Species
+	var total int64
 
 	query := facades.Orm().Query()
 
 	if se.Search != "" {
 		query = query.Where(`search_vector @@ plainto_tsquery('portuguese',?)`, se.Search)
 	}
-
-	var total int64
 
 	err := query.Table("species").Count(&total)
 	if err != nil {
