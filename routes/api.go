@@ -56,5 +56,6 @@ func enclosureRoutes() func(route.Router) {
 
 	return func(router route.Router) {
 		router.Middleware(enclosure.Validate()).Post("/enclosures", enclosureController.Store)
+		router.Get("/enclosures", enclosureController.Index)
 	}
 }
