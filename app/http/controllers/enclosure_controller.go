@@ -22,6 +22,7 @@ func (r *EnclosureController) Store(ctx http.Context) http.Response {
 
 	err := ctx.Request().Bind(&createEnclosure)
 	if err != nil {
+		facades.Log().Errorf("failed to bind %v", err)
 		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
 	}
 

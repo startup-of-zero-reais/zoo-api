@@ -20,7 +20,6 @@ func Api() {
 
 func apiv1(base route.Router) {
 	authController := controllers.NewAuthController()
-	enclosureController := controllers.NewEnclosureController()
 
 	// Groups declaration
 
@@ -42,17 +41,19 @@ func apiv1(base route.Router) {
 	base.
 		Middleware(utils.GrantAuth(authController.UserService.GetByID)).
 		Group(authRoutes(authController))
-
-	base.Group(enclosureRoutes(enclosureController))
 }
 
 func authRoutes(authController *controllers.AuthController) func(route.Router) {
 	return func(router route.Router) {
 		router.Get("/auth/me", authController.Me)
+
+		router.Group(enclosureRoutes())
 	}
 }
 
-func enclosureRoutes(enclosureController *controllers.EnclosureController) func(route.Router) {
+func enclosureRoutes() func(route.Router) {
+	enclosureController := controllers.NewEnclosureController()
+
 	return func(router route.Router) {
 		router.Middleware(enclosure.Validate()).Post("/enclosures", enclosureController.Store)
 	}
