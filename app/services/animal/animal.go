@@ -7,6 +7,7 @@ import (
 
 type Animal interface {
 	Create(requests.CreateAnimal) (models.Animal, error)
+	List(requests.SearchAnimals) (int64, []models.Animal, error)
 }
 
 type animalImpl struct{}

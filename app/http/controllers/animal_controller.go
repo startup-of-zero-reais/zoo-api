@@ -33,3 +33,25 @@ func (r *AnimalController) Store(ctx http.Context) http.Response {
 
 	return ctx.Response().Success().Json(animal)
 }
+
+func (r AnimalController) Index(ctx http.Context) http.Response {
+	var searchAnimals requests.SearchAnimals
+	err := ctx.Request().BindQuery(&searchAnimals)
+	if err != nil {
+		facades.Log().Errorf("failed to bind animals filters: %v", err)
+		ctx.Request().AbortWithStatusJson(http.StatusInternalServerError, http.Json{"error": err.Error()})
+		return nil
+	}
+
+	total, animals, err := r.Animal.List(searchAnimals)
+	if err != nil {
+		facades.Log().Errorf("failed to list animals: %v", err)
+		ctx.Request().AbortWithStatusJson(http.StatusInternalServerError, http.Json{"error": err.Error()})
+		return nil
+	}
+
+	return ctx.Response().Success().Json(http.Json{
+		"total":   total,
+		"animals": animals,
+	})
+}

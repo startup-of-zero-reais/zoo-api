@@ -81,5 +81,6 @@ func animalRoutes() func(route.Router) {
 
 	return func(router route.Router) {
 		router.Middleware(animal.Validate()).Post("/animals", animalController.Store)
+		router.Get("/animals", animalController.Index)
 	}
 }

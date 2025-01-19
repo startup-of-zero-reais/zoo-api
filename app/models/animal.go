@@ -19,6 +19,9 @@ type Animal struct {
 	Age         time.Time      `gorm:"column:age" json:"age"`
 	SpeciesID   string         `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
 	EnclosureID string         `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
+
+	Enclosure *Enclosure `json:"enclosure,omitempty"`
+	Species   *Species   `json:"species,omitempty"`
 }
 
 func (Animal) TableName() string {
