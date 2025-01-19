@@ -7,6 +7,7 @@ import (
 
 type Species interface {
 	Create(cs requests.CreateSpecies) (models.Species, error)
+	List(se requests.SearchSpecies) (int64, []models.Species, error)
 }
 
 type SpeciesImpl struct{}
