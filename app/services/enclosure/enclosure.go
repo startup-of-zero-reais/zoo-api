@@ -7,6 +7,8 @@ import (
 
 type Enclosure interface {
 	Create(requests.CreateEnclosure) (models.Enclosure, error)
+
+	List(identification string) (int64, []models.Enclosure, error)
 }
 
 type enclosureImpl struct{}
