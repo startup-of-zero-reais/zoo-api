@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/facades"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
@@ -20,33 +18,18 @@ func NewEnclosureController() *EnclosureController {
 }
 
 func (r *EnclosureController) Store(ctx http.Context) http.Response {
-	var req requests.CreateEnclosure
+	var createEnclosure requests.CreateEnclosure
 
-	errors, err := ctx.Request().ValidateRequest(&req)
+	err := ctx.Request().Bind(&createEnclosure)
+	if err != nil {
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
+	}
+
+	enclosure, err := r.EnclosureService.Create(createEnclosure)
 	if err != nil {
 		facades.Log().Errorf("failed to get enclosure by id %v", err)
-		ctx.Request().AbortWithStatus(http.StatusInternalServerError)
-		return nil
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
 	}
 
-	if errors != nil {
-		ctx.Response().Json(http.StatusBadRequest, http.Json{
-			"errors": errors,
-		})
-	}
-
-	fmt.Println("errors", errors)
-
-	fmt.Printf("%+v\n", req)
-
-	enclosure, err := r.EnclosureService.Create(req)
-	if err != nil {
-		facades.Log().Errorf("failed to get enclosure by id %v", err)
-		ctx.Request().AbortWithStatus(http.StatusInternalServerError)
-		return nil
-	}
-
-	return ctx.Response().Success().Json(http.Json{
-		"data": enclosure,
-	})
+	return ctx.Response().Success().Json(enclosure)
 }
