@@ -26,7 +26,7 @@ services:
             context: .docker/postgresql
             dockerfile: Dockerfile
         healthcheck:
-            test: pg_isready -U postgres -h localhost
+            test: pg_isready -U ${DB_USERNAME} -h localhost
             interval: 5s
             timeout: 5s
             retries: 10

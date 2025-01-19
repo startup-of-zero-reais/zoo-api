@@ -7,6 +7,7 @@ import (
 	"github.com/goravel/framework/session/middleware"
 
 	"github.com/startup-of-zero-reais/zoo-api/app/http/controllers"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/enclosure"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/utils"
 )
 
@@ -45,5 +46,15 @@ func apiv1(base route.Router) {
 func authRoutes(authController *controllers.AuthController) func(route.Router) {
 	return func(router route.Router) {
 		router.Get("/auth/me", authController.Me)
+
+		router.Group(enclosureRoutes())
+	}
+}
+
+func enclosureRoutes() func(route.Router) {
+	enclosureController := controllers.NewEnclosureController()
+
+	return func(router route.Router) {
+		router.Middleware(enclosure.Validate()).Post("/enclosures", enclosureController.Store)
 	}
 }
