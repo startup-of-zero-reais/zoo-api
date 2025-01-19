@@ -8,6 +8,8 @@ import (
 
 	"github.com/startup-of-zero-reais/zoo-api/app/http/controllers"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/enclosure"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/species"
+
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/utils"
 )
 
@@ -48,6 +50,8 @@ func authRoutes(authController *controllers.AuthController) func(route.Router) {
 		router.Get("/auth/me", authController.Me)
 
 		router.Group(enclosureRoutes())
+
+		router.Group(speciesRoutes())
 	}
 }
 
@@ -57,5 +61,14 @@ func enclosureRoutes() func(route.Router) {
 	return func(router route.Router) {
 		router.Middleware(enclosure.Validate()).Post("/enclosures", enclosureController.Store)
 		router.Get("/enclosures", enclosureController.Index)
+	}
+}
+
+func speciesRoutes() func(route.Router) {
+	speciesController := controllers.NewSpeciesController()
+
+	return func(router route.Router) {
+		router.Middleware(species.Validate()).Post("/species", speciesController.Create)
+		router.Get("/species", speciesController.Index)
 	}
 }
