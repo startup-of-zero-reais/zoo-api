@@ -12,6 +12,8 @@ func (c *SpeciesImpl) Create(cs requests.CreateSpecies) (models.Species, error) 
 
 	species.CommonName = cs.CommonName
 	species.CientificName = cs.CientificName
+	species.Kind = cs.Kind
+	species.TaxonomicOrder = cs.TaxonomicOrder
 
 	err := facades.Orm().Query().Create(&species)
 	if err != nil {
