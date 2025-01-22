@@ -1,20 +1,27 @@
+CREATE TYPE age_enum AS ENUM ('neonate','cub','young','adult','senile');
 
-CREATE TYPE mark_type_enum AS ENUM ('washer','microchip');
+CREATE TYPE gender_enum AS ENUM ('male','female','indefinite');
+
 
 CREATE TABLE animals (
   id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   name VARCHAR(255) NOT NULL,
-  mark_type mark_type_enum NOT NULL DEFAULT 'washer',
-  mark_number INTEGER NOT NULL,
+  washer_code VARCHAR(255) NOT NULL,
+  microchip_code VARCHAR(255) NOT NULL,
   landing_at TIMESTAMP NOT NULL,
   origin VARCHAR(255) NOT NULL,
-  age TIMESTAMP NOT NULL,
+  born_date TIMESTAMP DEFAULT NULL,
+  age age_enum DEFAULT NULL,
+  gender gender_enum DEFAULT NULL,
+  observation VARCHAR(255) DEFAULT NULL,
   species_id UUID NOT NULL,
   enclosure_id UUID NOT NULL,
   
 
   search_vector TSVECTOR GENERATED ALWAYS AS (
-    setweight(to_tsvector('portuguese', name), 'A')
+    setweight(to_tsvector('portuguese', name), 'A') ||
+    setweight(to_tsvector('portuguese', washer_code), 'B') ||
+    setweight(to_tsvector('portuguese', microchip_code), 'C')
   ) STORED,
  
   CONSTRAINT fk_species_id FOREIGN KEY(species_id) REFERENCES species(id) ON DELETE CASCADE,
