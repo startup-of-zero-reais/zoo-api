@@ -23,7 +23,6 @@ func (r *CreateAnimal) Authorize(ctx http.Context) error { return nil }
 
 func (r *CreateAnimal) Rules(ctx http.Context) map[string]string {
 	return map[string]string{
-		"name":         "required",
 		"landing_at":   "required|date",
 		"origin":       "required",
 		"age":          "required_without:born_date|in:neonate,cub,young,adult,senile",
@@ -36,9 +35,7 @@ func (r *CreateAnimal) Rules(ctx http.Context) map[string]string {
 
 func (r *CreateAnimal) Messages(ctx http.Context) map[string]string {
 	return map[string]string{
-		"name.required":         "Animals should have at least name",
-		"mark_type.required":    "The mark type field is required.",
-		"age.in":                "The age must be one of 'neonate','cub','young','adult' or 'senile'",
+		"age.in":                "The age must be one of 'neonate', 'cub', 'young', 'adult' or 'senile'",
 		"gender.in":             "The gender must be one of male,female or undefined",
 		"landing_at.required":   "The landing at field is required",
 		"landing_at.date":       "The landing at field is should be an date string (RFC3339)",
