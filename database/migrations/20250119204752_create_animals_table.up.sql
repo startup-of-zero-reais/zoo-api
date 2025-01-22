@@ -1,6 +1,6 @@
 CREATE TYPE age_enum AS ENUM ('neonate','cub','young','adult','senile');
 
-CREATE TYPE gender_enum AS ENUM ('male','female','indefinite');
+CREATE TYPE gender_enum AS ENUM ('male','female','undefined');
 
 
 CREATE TABLE animals (
