@@ -2,23 +2,19 @@ package models
 
 import "time"
 
-type MarkTypeStatus string
-
-const (
-	Washer    MarkTypeStatus = "washer"
-	Microchip MarkTypeStatus = "microchip"
-)
-
 type Animal struct {
 	Model
-	Name        string         `gorm:"column:name;default:null;" json:"name,omitempty"`
-	MarkType    MarkTypeStatus `gorm:"column:mark_type;default:wahser;" json:"mark_type"`
-	MarkNumber  string         `gorm:"column:mark_number" json:"mark_number"`
-	LandingAt   time.Time      `gorm:"column:landing_at" json:"landing_at"`
-	Origin      string         `gorm:"column:origin" json:"origin"`
-	Age         time.Time      `gorm:"column:age" json:"age"`
-	SpeciesID   string         `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
-	EnclosureID string         `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
+	Name          string    `gorm:"column:name;default:null;" json:"name,omitempty"`
+	WasherCode    string    `gorm:"column:washer_code" json:"washer_code"`
+	MicrochipCode string    `gorm:"column:microchip_code" json:"microchip_code"`
+	LandingAt     time.Time `gorm:"column:landing_at" json:"landing_at"`
+	Origin        string    `gorm:"column:origin" json:"origin"`
+	BornDate      time.Time `gorm:"column:born_date" json:"born_date"`
+	Age           string    `gorm:"column:age;default:null;" json:"age,omitempty"`
+	Gender        string    `gorm:"column:gender;default:null;" json:"gender,omitempty"`
+	Observation   string    `gorm:"column:observation;default:null;" json:"observation,omitempty"`
+	SpeciesID     string    `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
+	EnclosureID   string    `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
 
 	Enclosure *Enclosure `json:"enclosure,omitempty"`
 	Species   *Species   `json:"species,omitempty"`
