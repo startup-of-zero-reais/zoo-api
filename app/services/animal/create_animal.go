@@ -13,6 +13,7 @@ func (e animalImpl) Create(ac requests.CreateAnimal) (models.Animal, error) {
 	var animal models.Animal
 
 	landingAt, _ := time.Parse(time.RFC3339, ac.LandingAt)
+	bornDate, _ := time.Parse(time.RFC3339, ac.BornDate)
 
 	animal.EnclosureID = ac.EnclosureID
 	animal.SpeciesID = ac.SpeciesID
@@ -20,7 +21,7 @@ func (e animalImpl) Create(ac requests.CreateAnimal) (models.Animal, error) {
 	animal.WasherCode = ac.WasherCode
 	animal.MicrochipCode = ac.MicrochipCode
 	animal.LandingAt = landingAt
-	animal.BornDate = ac.BornDate
+	animal.BornDate = bornDate
 	animal.Age = ac.Age
 	animal.Origin = ac.Origin
 	animal.Gender = ac.Gender

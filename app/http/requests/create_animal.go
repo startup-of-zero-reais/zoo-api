@@ -1,24 +1,22 @@
 package requests
 
 import (
-	"time"
-
 	"github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/contracts/validation"
 )
 
 type CreateAnimal struct {
-	Name          string    `form:"name" json:"name"`
-	WasherCode    string    `form:"washer_code" json:"washer_code"`
-	MicrochipCode string    `form:"microchip_code" json:"microchip_code"`
-	LandingAt     string    `form:"landing_at" json:"landing_at"`
-	Origin        string    `form:"origin" json:"origin"`
-	BornDate      time.Time `form:"born_date" json:"born_date"`
-	Age           string    `form:"age" json:"age"`
-	Observation   string    `form:"observation" json:"observation"`
-	Gender        string    `form:"gender" json:"gender"`
-	SpeciesID     string    `form:"species_id" json:"species_id"`
-	EnclosureID   string    `form:"enclosure_id" json:"enclosure_id"`
+	Name          string `form:"name" json:"name"`
+	WasherCode    string `form:"washer_code" json:"washer_code"`
+	MicrochipCode string `form:"microchip_code" json:"microchip_code"`
+	LandingAt     string `form:"landing_at" json:"landing_at"`
+	Origin        string `form:"origin" json:"origin"`
+	BornDate      string `form:"born_date" json:"born_date"`
+	Age           string `form:"age" json:"age"`
+	Observation   string `form:"observation" json:"observation"`
+	Gender        string `form:"gender" json:"gender"`
+	SpeciesID     string `form:"species_id" json:"species_id"`
+	EnclosureID   string `form:"enclosure_id" json:"enclosure_id"`
 }
 
 func (r *CreateAnimal) Authorize(ctx http.Context) error { return nil }
@@ -32,7 +30,7 @@ func (r *CreateAnimal) Rules(ctx http.Context) map[string]string {
 		"gender":       "nullable|in:male,female,indefinite",
 		"species_id":   "required|uuid",
 		"enclosure_id": "required|uuid",
-		"born_date":    "required_without:age",
+		"born_date":    "required_without:age|date",
 	}
 }
 
@@ -44,6 +42,7 @@ func (r *CreateAnimal) Messages(ctx http.Context) map[string]string {
 		"gender.in":             "The gender must be one of male,female pr indefinite",
 		"landing_at.required":   "The landing at field is required",
 		"landing_at.date":       "The landing at field is should be an date string (RFC3339)",
+		"born_date.date":        "The born date at field is should be an date string (RFC3339)",
 		"origin.required":       "The origin field is required",
 		"species_id.required":   "The species id field is required",
 		"enclosure_id.required": "The enclosure id field is required",
