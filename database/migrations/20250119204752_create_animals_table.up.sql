@@ -34,6 +34,8 @@ CREATE TABLE animals (
 CREATE INDEX IF NOT EXISTS idx_animals_search_vector ON animals USING GIN(search_vector);
 CREATE INDEX IF NOT EXISTS deleted_at_idx ON animals(deleted_at) WHERE deleted_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_animals_updated_at ON animals(updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_washer_code ON animals(washer_code);
+CREATE INDEX IF NOT EXISTS idx_microchip_code ON animals(microchip_code);
 
 CREATE OR REPLACE TRIGGER set_updated_at_species
 BEFORE UPDATE ON animals FOR EACH ROW
