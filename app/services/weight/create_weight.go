@@ -11,7 +11,7 @@ func (e weightImpl) Create(wr requests.CreateWeight, userID string) (models.Weig
 	var weight models.Weight
 	weight.Weight = wr.Weight
 	weight.UserID = userID
-	weight.UserID = wr.AnimalID
+	weight.AnimalID = wr.AnimalID
 
 	err := facades.Orm().Query().Create(&weight)
 	if err != nil {
