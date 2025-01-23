@@ -7,6 +7,7 @@ import (
 
 type Weight interface {
 	Create(requests.CreateWeight, string) (models.Weight, error)
+	ListByAnimals(sw requests.SearchWeight, animalID string) (int64, []models.Weight, error)
 }
 
 type weightImpl struct{}
