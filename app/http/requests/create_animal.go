@@ -36,7 +36,7 @@ func (r *CreateAnimal) Rules(ctx http.Context) map[string]string {
 func (r *CreateAnimal) Messages(ctx http.Context) map[string]string {
 	return map[string]string{
 		"age.in":                "The age must be one of 'neonate', 'cub', 'young', 'adult' or 'senile'",
-		"gender.in":             "The gender must be one of male,female or undefined",
+		"gender.in":             "The gender must be one of male, female or undefined",
 		"landing_at.required":   "The landing at field is required",
 		"landing_at.date":       "The landing at field is should be an date string (RFC3339)",
 		"born_date.date":        "The born date at field is should be an date string (RFC3339)",
