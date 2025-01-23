@@ -1,13 +1,13 @@
 CREATE TABLE species (
   id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   common_name VARCHAR(255) NOT NULL,
-  cientific_name VARCHAR(255) NOT NULL,
+  scientific_name VARCHAR(255) NOT NULL,
   taxonomic_order VARCHAR(255) NOT NULL,
   kind VARCHAR(255) NOT NULL,
 
   search_vector TSVECTOR GENERATED ALWAYS AS (
     setweight(to_tsvector('portuguese', common_name), 'A') ||
-    setweight(to_tsvector('portuguese', cientific_name), 'B') ||
+    setweight(to_tsvector('portuguese', scientific_name), 'B') ||
     setweight(to_tsvector('portuguese', kind), 'C') ||
     setweight(to_tsvector('portuguese', taxonomic_order), 'D')
   ) STORED,
