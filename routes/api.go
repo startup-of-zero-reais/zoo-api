@@ -10,6 +10,7 @@ import (
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/animal"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/enclosure"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/species"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/weight"
 
 	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/utils"
 )
@@ -78,9 +79,11 @@ func speciesRoutes() func(route.Router) {
 
 func animalRoutes() func(route.Router) {
 	animalController := controllers.NewAnimalController()
+	weightController := controllers.NewWeightController()
 
 	return func(router route.Router) {
 		router.Middleware(animal.Validate()).Post("/animals", animalController.Store)
 		router.Get("/animals", animalController.Index)
+		router.Middleware(weight.Validate()).Post("animals/{id}/weights", weightController.Store)
 	}
 }
