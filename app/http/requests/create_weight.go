@@ -20,9 +20,7 @@ func (r *CreateWeight) Rules(ctx http.Context) map[string]string {
 
 func (r *CreateWeight) Messages(ctx http.Context) map[string]string {
 	return map[string]string{
-		"weight.required":    "Weight history should have at least weight",
-		"animal_id.required": "Weight history should have at least animal_id",
-		"animal_id.uuid":     "Animal identifier should be valid uuid",
+		"weight.required": "Weight history should have at least weight",
 	}
 }
 
