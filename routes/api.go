@@ -84,6 +84,7 @@ func animalRoutes() func(route.Router) {
 	return func(router route.Router) {
 		router.Middleware(animal.Validate()).Post("/animals", animalController.Store)
 		router.Get("/animals", animalController.Index)
-		router.Middleware(weight.Validate()).Post("animals/{id}/weights", weightController.Store)
+		router.Middleware(weight.Validate()).Post("/animals/{id}/weights", weightController.Store)
+		router.Get("/animals/{id}/weights", weightController.Show)
 	}
 }
