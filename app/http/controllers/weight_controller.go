@@ -22,7 +22,7 @@ func (r *WeightController) Store(ctx http.Context) http.Response {
 
 	err := ctx.Request().Bind(&weight)
 
-	weight.AnimalId = ctx.Request().Route("id")
+	weight.AnimalID = ctx.Request().Route("id")
 
 	if err != nil {
 		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})

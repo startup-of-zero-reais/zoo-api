@@ -7,17 +7,17 @@ import (
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
 )
 
-func (e weightImpl) Create(wr requests.CreateWeight, userId string) (models.Weight, error) {
-	var weight_history models.Weight
-	weight_history.Weight = wr.Weight
-	weight_history.UserId = userId
-	weight_history.AnimalId = wr.AnimalId
+func (e weightImpl) Create(wr requests.CreateWeight, userID string) (models.Weight, error) {
+	var weight models.Weight
+	weight.Weight = wr.Weight
+	weight.UserID = userID
+	weight.UserID = wr.AnimalID
 
-	err := facades.Orm().Query().Create(&weight_history)
+	err := facades.Orm().Query().Create(&weight)
 	if err != nil {
 		facades.Log().Errorf("failed to create weight history %v", err)
 		return models.Weight{}, responses.ErrUnhandledPgError
 	}
 
-	return weight_history, nil
+	return weight, nil
 }

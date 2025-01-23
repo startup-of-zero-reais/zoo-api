@@ -7,7 +7,7 @@ import (
 
 type CreateWeight struct {
 	Weight   float64 `form:"weight" json:"weight"`
-	AnimalId string  `form:"animal_id" json:"animal_id"`
+	AnimalID string  `form:"animal_id" json:"animal_id"`
 }
 
 func (r *CreateWeight) Authorize(ctx http.Context) error { return nil }
