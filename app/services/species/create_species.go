@@ -11,7 +11,7 @@ func (c *SpeciesImpl) Create(cs requests.CreateSpecies) (models.Species, error) 
 	var species models.Species
 
 	species.CommonName = cs.CommonName
-	species.CientificName = cs.CientificName
+	species.ScientificName = cs.ScientificName
 	species.Kind = cs.Kind
 	species.TaxonomicOrder = cs.TaxonomicOrder
 
