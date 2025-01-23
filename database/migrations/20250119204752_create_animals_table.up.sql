@@ -6,8 +6,8 @@ CREATE TYPE gender_enum AS ENUM ('male','female','undefined');
 CREATE TABLE animals (
   id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   name VARCHAR(255) DEFAULT NULL,
-  washer_code VARCHAR(255) NOT NULL,
-  microchip_code VARCHAR(255) NOT NULL,
+  washer_code VARCHAR(255) DEFAULT NULL,
+  microchip_code VARCHAR(255) DEFAULT NULL,
   landing_at TIMESTAMP NOT NULL,
   origin VARCHAR(255) NOT NULL,
   born_date TIMESTAMP DEFAULT NULL,
