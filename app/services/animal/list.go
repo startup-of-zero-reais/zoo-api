@@ -3,6 +3,7 @@ package animal
 import (
 	"strings"
 
+	"github.com/goravel/framework/contracts/database/orm"
 	"github.com/goravel/framework/facades"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/responses"
@@ -33,7 +34,10 @@ func (e *animalImpl) List(sa requests.SearchAnimals) (int64, []models.Animal, er
 		}
 	}
 
-	err = query.Find(&animals)
+	err = query.With("Weights", func(q orm.Query) orm.Query {
+		return q.OrderByDesc("updated_at").Limit(1)
+	}).Find(&animals)
+
 	if err != nil {
 		facades.Log().Errorf("failed to list animals: %v", err)
 		return 0, nil, responses.ErrUnhandledPgError
