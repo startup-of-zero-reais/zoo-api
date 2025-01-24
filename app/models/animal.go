@@ -16,6 +16,7 @@ type Animal struct {
 	SpeciesID     string    `gorm:"column:species_id;type:uuid;not null" json:"species_id"`
 	EnclosureID   string    `gorm:"column:enclosure_id;type:uuid;not null" json:"enclosure_id"`
 
+	Weights   []Weight   `json:"weights,omitempty"`
 	Enclosure *Enclosure `json:"enclosure,omitempty"`
 	Species   *Species   `json:"species,omitempty"`
 }
