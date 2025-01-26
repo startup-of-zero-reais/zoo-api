@@ -152,6 +152,20 @@ func (r *UploadController) Index(ctx http.Context) http.Response {
 	})
 }
 
+func (r *UploadController) IndexFiles(ctx http.Context) http.Response {
+	id := ctx.Request().Route("id")
+	enclosures, species, animals, err := r.UploadService.GetImportFiles(id)
+	if err != nil {
+		return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{
+		"enclosures": enclosures,
+		"species":    species,
+		"animals":    animals,
+	})
+}
+
 type FileEntry struct {
 	Name  string
 	Index int

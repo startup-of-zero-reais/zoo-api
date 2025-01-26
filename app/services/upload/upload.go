@@ -11,6 +11,7 @@ import (
 type Upload interface {
 	Process(string, requests.CreateFile, models.ImportStatus)
 	GetImportsStatus() ([]models.ImportStatus, error)
+	GetImportFiles(stateID string) ([]models.ImportEnclosure, []models.ImportSpecies, []models.ImportAnimals, error)
 }
 
 type uploadImpl struct {

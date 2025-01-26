@@ -97,5 +97,6 @@ func uploadRoutes() func(route.Router) {
 	return func(router route.Router) {
 		router.Post("/upload", uploadController.Upload)
 		router.Get("/upload/imports", uploadController.Index)
+		router.Get("/upload/imports/{id}", uploadController.IndexFiles)
 	}
 }
