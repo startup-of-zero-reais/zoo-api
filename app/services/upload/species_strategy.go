@@ -21,7 +21,7 @@ func (s *speciesStrategy) Read() ([]string, error) {
 }
 
 // StartImport implements FileStrategy.
-func (s *speciesStrategy) StartImport() error {
+func (s *speciesStrategy) StartImport(is models.ImportStatus) error {
 	rowCounter := 1 // start at 1 because csv has header line
 	doneCounter := 0
 
@@ -45,6 +45,7 @@ func (s *speciesStrategy) StartImport() error {
 		species.ScientificName = normalize(row[1])
 		species.Order = normalize(row[2])
 		species.Kind = normalize(row[3])
+		species.StateID = is.ID
 
 		if species.CommonName == "" {
 			species.Reason = fmt.Sprintf("A espécie da linha %d não está preenchida", rowCounter)

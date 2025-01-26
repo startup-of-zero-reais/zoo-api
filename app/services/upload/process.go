@@ -9,7 +9,7 @@ import (
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
 )
 
-func (e uploadImpl) Process(filePath string, cf requests.CreateFile) {
+func (e uploadImpl) Process(filePath string, cf requests.CreateFile, is models.ImportStatus) {
 	file, err := os.OpenFile(filePath, os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		facades.Log().Errorf("failed to upload process %v", err)
@@ -26,15 +26,16 @@ func (e uploadImpl) Process(filePath string, cf requests.CreateFile) {
 
 	query := facades.Orm().Query()
 
+	is.State = "processing"
 	_, err = query.
 		Where("upload_id = ?", cf.UploadID).
-		Update(&models.ImportStatus{State: "processing"})
+		Update(&is)
 	if err != nil {
 		facades.Log().Error(err)
 		return
 	}
 
-	if err := processor.StartImport(); err != nil {
+	if err := processor.StartImport(is); err != nil {
 		facades.Log().Error(err)
 		return
 	}
@@ -44,9 +45,10 @@ func (e uploadImpl) Process(filePath string, cf requests.CreateFile) {
 		return
 	}
 
+	is.State = "completed"
 	_, err = query.
 		Where("upload_id = ?", cf.UploadID).
-		Update(&models.ImportStatus{State: "completed"})
+		Update(&is)
 	if err != nil {
 		facades.Log().Error(err)
 	}

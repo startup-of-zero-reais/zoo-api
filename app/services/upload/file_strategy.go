@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/startup-of-zero-reais/zoo-api/app/models"
 	"golang.org/x/text/unicode/norm"
 )
 
 type FileStrategy interface {
 	Read() ([]string, error)
-	StartImport() error
+	StartImport(models.ImportStatus) error
 }
 
 type animalsStrategy struct{}

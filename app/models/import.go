@@ -15,6 +15,7 @@ type ImportEnclosure struct {
 	ID             string `gorm:"column:id;primaryKey;not null;default:uuid_generate_v4()" json:"id"`
 	Identification string `gorm:"column:identification;default:null" json:"identification"`
 	Reason         string `gorm:"column:reason;default:null" json:"reason"`
+	StateID        string `gorm:"column:state_id" json:"state_id"`
 }
 
 func (ImportEnclosure) TableName() string {
@@ -28,6 +29,7 @@ type ImportSpecies struct {
 	Order          string `gorm:"column:taxonomic_order;default:null" json:"taxonomic_order"`
 	Kind           string `gorm:"column:kind;default:null" json:"kind"`
 	Reason         string `gorm:"column:reason;default:null" json:"reason"`
+	StateID        string `gorm:"column:state_id" json:"state_id"`
 }
 
 func (ImportSpecies) TableName() string {

@@ -20,7 +20,7 @@ func (e *enclosuresStrategy) Read() ([]string, error) {
 	return e.reader.Read()
 }
 
-func (e *enclosuresStrategy) StartImport() error {
+func (e *enclosuresStrategy) StartImport(is models.ImportStatus) error {
 	rowCounter := 1 // starts at 1 because csv has header line
 	doneCounter := 0
 
@@ -41,6 +41,7 @@ func (e *enclosuresStrategy) StartImport() error {
 
 		var enclosure models.ImportEnclosure
 		enclosure.Identification = normalize(row[0])
+		enclosure.StateID = is.ID
 
 		if enclosure.Identification == "" {
 			enclosure.Reason = fmt.Sprintf("O recinto na linha %d, está vazio, por isso não foi possível importar", rowCounter)

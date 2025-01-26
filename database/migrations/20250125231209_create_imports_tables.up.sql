@@ -14,9 +14,12 @@ CREATE TABLE IF NOT EXISTS import_enclosures (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     identification VARCHAR(255) DEFAULT NULL,
     reason VARCHAR(255) DEFAULT NULL,
+    state_id UUID NOT NULL,
 
     UNIQUE (id),
-    UNIQUE (identification)
+    UNIQUE (identification),
+
+    CONSTRAINT fk_enclosure_state_id FOREIGN KEY(state_id) REFERENCES import_state(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS import_species (
@@ -26,9 +29,12 @@ CREATE TABLE IF NOT EXISTS import_species (
     taxonomic_order VARCHAR(255) DEFAULT NULL,
     kind VARCHAR(255) DEFAULT NULL,
     reason VARCHAR(255) DEFAULT NULL,
+    state_id UUID NOT NULL,
 
     UNIQUE (id),
-    UNIQUE (common_name)
+    UNIQUE (common_name),
+
+    CONSTRAINT fk_species_state_id FOREIGN KEY(state_id) REFERENCES import_state(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS import_animals (
@@ -43,13 +49,16 @@ CREATE TABLE IF NOT EXISTS import_animals (
     gender gender_enum DEFAULT NULL,
     observation VARCHAR(255) DEFAULT NULL,
     reason VARCHAR(255) DEFAULT NULL,
+    state_id UUID NOT NULL,
 
     species_id UUID DEFAULT NULL,
     enclosure_id UUID DEFAULT NULL,
 
     UNIQUE (id),
     UNIQUE (microchip_code),
-    UNIQUE (washer_code)
+    UNIQUE (washer_code),
+
+    CONSTRAINT fk_animals_state_id FOREIGN KEY(state_id) REFERENCES import_state(id) ON DELETE CASCADE
 );
 
 

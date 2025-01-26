@@ -9,7 +9,7 @@ import (
 )
 
 type Upload interface {
-	Process(string, requests.CreateFile)
+	Process(string, requests.CreateFile, models.ImportStatus)
 	GetImportsStatus() ([]models.ImportStatus, error)
 }
 

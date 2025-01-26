@@ -61,20 +61,25 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 	}
 
 	query := facades.Orm().Query()
-	if cf.ChunkIdx == 0 {
-		query.
-			Where("upload_id = ?", cf.UploadID).
-			Save(&models.ImportStatus{
-				Filename: cf.Filename,
-				State:    "sending",
-				UploadID: cf.UploadID,
-			})
+	importStatus := models.ImportStatus{
+		Filename: cf.Filename,
+		State:    "sending",
+		UploadID: cf.UploadID,
 	}
 
+	query.
+		Where("upload_id = ?", cf.UploadID).
+		FirstOr(&importStatus, func() error {
+			return query.Create(&importStatus)
+		})
+
+	fmt.Printf("IMPORT STATUS %+v\n", importStatus)
+
 	if cf.ChunkIdx+1 == cf.TotalChunks {
+		importStatus.State = "received"
 		_, err = query.
 			Where("upload_id = ?", cf.UploadID).
-			Update(&models.ImportStatus{State: "received"})
+			Update(&importStatus)
 		if err != nil {
 			return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
 		}
@@ -129,7 +134,7 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 			os.Remove(chunkPath)
 		}
 
-		go r.UploadService.Process(ffPath, cf)
+		go r.UploadService.Process(ffPath, cf, importStatus)
 	}
 
 	return ctx.Response().Json(http.StatusOK, http.Json{"message": "File uploaded successfully"})
