@@ -92,10 +92,10 @@ func animalRoutes() func(route.Router) {
 }
 
 func uploadRoutes() func(route.Router) {
-
 	uploadController := controllers.NewUploadController()
 
 	return func(router route.Router) {
 		router.Post("/upload", uploadController.Upload)
+		router.Get("/upload/imports", uploadController.Index)
 	}
 }

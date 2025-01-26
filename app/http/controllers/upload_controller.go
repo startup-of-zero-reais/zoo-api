@@ -14,6 +14,7 @@ import (
 	"github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/facades"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
+	"github.com/startup-of-zero-reais/zoo-api/app/models"
 	"github.com/startup-of-zero-reais/zoo-api/app/services/upload"
 )
 
@@ -32,12 +33,12 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 
 	err := ctx.Request().Bind(&cf)
 	if err != nil {
-		return ctx.Response().Json(400, http.Json{"error": err.Error()})
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
 	}
 
 	file, err := cf.File.Open()
 	if err != nil {
-		return ctx.Response().Json(500, http.Json{
+		return ctx.Response().Json(http.StatusInternalServerError, http.Json{
 			"error": "Failed to open file chunk",
 		})
 	}
@@ -49,30 +50,48 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 
 	tmpFile, err := os.Create(facades.App().StoragePath("app/" + filePath))
 	if err != nil {
-		return ctx.Response().Json(500, http.Json{"error": err.Error()})
+		return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
 	}
 
 	defer tmpFile.Close()
 
 	_, err = io.Copy(tmpFile, file)
 	if err != nil {
-		return ctx.Response().Json(500, http.Json{"error": err.Error()})
+		return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
+	}
+
+	query := facades.Orm().Query()
+	if cf.ChunkIdx == 0 {
+		query.
+			Where("upload_id = ?", cf.UploadID).
+			Save(&models.ImportStatus{
+				Filename: cf.Filename,
+				State:    "sending",
+				UploadID: cf.UploadID,
+			})
 	}
 
 	if cf.ChunkIdx+1 == cf.TotalChunks {
+		_, err = query.
+			Where("upload_id = ?", cf.UploadID).
+			Update(&models.ImportStatus{State: "received"})
+		if err != nil {
+			return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
+		}
+
 		upDir := facades.App().StoragePath("app/tmp/uploads")
 		ffPath := filepath.Join(upDir, fmt.Sprintf("final-%s-%s", cf.UploadID, cf.File.Filename))
 
 		files, err := os.ReadDir(upDir)
 		if err != nil {
-			return ctx.Response().Json(500, http.Json{"error": err.Error()})
+			return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
 		}
 
 		chunks := sortChunks(files, cf.UploadID)
 
 		ffBuffer := bytes.NewBuffer(nil)
 		for _, file := range chunks {
-			if fileName != file.Name {
+			if !strings.Contains(file.Name, cf.UploadID) {
 				continue
 			}
 
@@ -80,23 +99,28 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 
 			cfile, err := os.Open(chunkPath)
 			if err != nil {
-				return ctx.Response().Json(500, http.Json{"error": err.Error()})
+				return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
 			}
 
-			ffBuffer.ReadFrom(cfile)
+			n, err := ffBuffer.ReadFrom(cfile)
+			if err != nil {
+				return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
+			}
+
+			fmt.Println(ffBuffer.String(), n)
 			cfile.Close()
 		}
 
 		ff, err := os.Create(ffPath)
 		if err != nil {
-			return ctx.Response().Json(500, http.Json{"error": err.Error()})
+			return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
 		}
 
 		ff.ReadFrom(ffBuffer)
 		ff.Close()
 
 		for _, file := range chunks {
-			if fileName != file.Name {
+			if !strings.Contains(file.Name, cf.UploadID) {
 				continue
 			}
 
@@ -105,11 +129,22 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 			os.Remove(chunkPath)
 		}
 
-		go r.UploadService.Process(ffPath)
-
+		go r.UploadService.Process(ffPath, cf)
 	}
 
-	return ctx.Response().Json(200, http.Json{"message": "File uploaded successfully"})
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "File uploaded successfully"})
+}
+
+func (r *UploadController) Index(ctx http.Context) http.Response {
+	imports, err := r.UploadService.GetImportsStatus()
+	if err != nil {
+		return ctx.Response().Json(http.StatusInternalServerError, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{
+		"total":   len(imports),
+		"imports": imports,
+	})
 }
 
 type FileEntry struct {
@@ -124,11 +159,13 @@ func sortChunks(chunks []os.DirEntry, uploadID string) []FileEntry {
 
 	for _, chunk := range chunks {
 		if !strings.Contains(chunk.Name(), uploadID) {
+			facades.Log().Errorf("chunk name does not match", chunk.Name(), uploadID)
 			continue
 		}
 
 		matches := re.FindStringSubmatch(chunk.Name())
 		if matches == nil {
+			facades.Log().Errorf("chunk name does not matchs", matches)
 			continue
 		}
 
@@ -151,5 +188,4 @@ func sortChunks(chunks []os.DirEntry, uploadID string) []FileEntry {
 	})
 
 	return fileEntries
-
 }

@@ -11,6 +11,7 @@ type CreateFile struct {
 	UploadID    string                `form:"upload_id"`
 	ChunkIdx    int                   `form:"chunk_index"`
 	File        *multipart.FileHeader `form:"chunk"`
+	Filename    string                `form:"filename"`
 	TotalChunks int                   `form:"total_chunks"`
 }
 
