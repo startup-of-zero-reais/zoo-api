@@ -14,8 +14,6 @@ type FileStrategy interface {
 	StartImport(models.ImportStatus) error
 }
 
-type animalsStrategy struct{}
-
 func NewStrategy(reader *csv.Reader) (FileStrategy, error) {
 	fileHeader, err := reader.Read()
 	if err != nil {
@@ -31,7 +29,7 @@ func NewStrategy(reader *csv.Reader) (FileStrategy, error) {
 	}
 
 	if strings.EqualFold(fileHeader[0], "nome do animal") {
-		// animals strategy
+		return &animalsStrategy{reader: reader}, nil
 	}
 
 	return nil, fmt.Errorf("can not identify import strategy of this file")
