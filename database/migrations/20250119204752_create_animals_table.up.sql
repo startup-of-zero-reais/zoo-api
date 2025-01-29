@@ -3,7 +3,7 @@ CREATE TYPE age_enum AS ENUM ('neonate','cub','young','adult','senile');
 CREATE TYPE gender_enum AS ENUM ('male','female','undefined');
 
 
-CREATE TABLE animals (
+CREATE TABLE IF NOT EXISTS animals (
   id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   name VARCHAR(255) DEFAULT NULL,
   washer_code VARCHAR(255) DEFAULT NULL,

@@ -56,6 +56,8 @@ func authRoutes(authController *controllers.AuthController) func(route.Router) {
 		router.Group(speciesRoutes())
 
 		router.Group(animalRoutes())
+
+		router.Group(uploadRoutes())
 	}
 }
 
@@ -86,5 +88,15 @@ func animalRoutes() func(route.Router) {
 		router.Get("/animals", animalController.Index)
 		router.Middleware(weight.Validate()).Post("/animals/{id}/weights", weightController.Store)
 		router.Get("/animals/{id}/weights", weightController.Show)
+	}
+}
+
+func uploadRoutes() func(route.Router) {
+	uploadController := controllers.NewUploadController()
+
+	return func(router route.Router) {
+		router.Post("/upload", uploadController.Upload)
+		router.Get("/upload/imports", uploadController.Index)
+		router.Get("/upload/imports/{id}", uploadController.IndexFiles)
 	}
 }
