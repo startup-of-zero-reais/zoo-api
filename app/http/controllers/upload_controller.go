@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -15,16 +17,19 @@ import (
 	"github.com/goravel/framework/facades"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
+	"github.com/startup-of-zero-reais/zoo-api/app/services/animal"
 	"github.com/startup-of-zero-reais/zoo-api/app/services/upload"
 )
 
 type UploadController struct {
 	UploadService upload.Upload
+	AnimalService animal.Animal
 }
 
 func NewUploadController() *UploadController {
 	return &UploadController{
 		UploadService: upload.NewUploadService(),
+		AnimalService: animal.NewAnimalService(),
 	}
 }
 
@@ -32,8 +37,21 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 	var cf requests.CreateFile
 
 	err := ctx.Request().Bind(&cf)
+
 	if err != nil {
 		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	qt := ctx.Request().Query("type")
+
+	ids, err := parseIds(cf.Ids)
+
+	if err != nil {
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	if qt == "animal" {
+		return r.processAnimal(ctx, ids)
 	}
 
 	file, err := cf.File.Open()
@@ -207,4 +225,38 @@ func sortChunks(chunks []os.DirEntry, uploadID string) []FileEntry {
 	})
 
 	return fileEntries
+}
+
+func (r *UploadController) processAnimal(ctx http.Context, ids []string) http.Response {
+	animals, err := r.UploadService.GetImportAnimals(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to import array of animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.AnimalService.CreateListAnimal(animals)
+	if err != nil {
+		facades.Log().Errorf("failed to create list animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.UploadService.RemoveAnimals(ids)
+
+	if err != nil {
+		facades.Log().Errorf("failed to deleted import animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Import success by model animal"})
+}
+
+func parseIds(idsString string) ([]string, error) {
+	var ids []string
+	err := json.Unmarshal([]byte(idsString), &ids)
+
+	if err != nil {
+		return nil, errors.New("invalid format for ids")
+	}
+
+	return ids, nil
 }
