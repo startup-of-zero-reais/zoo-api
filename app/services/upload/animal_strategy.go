@@ -2,11 +2,11 @@ package upload
 
 import (
 	"encoding/csv"
-	"fmt"
 	"io"
 	"time"
 
 	"github.com/goravel/framework/facades"
+	"github.com/startup-of-zero-reais/zoo-api/app/helpers"
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
 )
 
@@ -61,14 +61,14 @@ func (a *animalsStrategy) StartImport(is models.ImportStatus) error {
 		}
 
 		animal.Origin = row[2]
-		_, err = getGender(row[3])
+		_, err = helpers.GetGender(row[3])
 		if err != nil {
 			facades.Log().Errorf("failed to get correctly gender: %v", err)
 			animal.Reason = "O Sexo do animal deve ser informado"
 		}
 		animal.Gender = row[3]
 
-		_, err = getAge(row[5])
+		_, err = helpers.GetAge(row[5])
 		if err != nil {
 			facades.Log().Errorf("failed to get correctly age: %v", err)
 			animal.Reason = "A Idade do animal deve ser informada"
@@ -113,38 +113,6 @@ func (a *animalsStrategy) StartImport(is models.ImportStatus) error {
 
 	facades.Log().Infof("Imported %d animals\n", doneCounter)
 	return nil
-}
-
-func getAge(text string) (string, error) {
-	ages := map[string]string{
-		"Neonato": "neonate",
-		"Filhote": "cub",
-		"Jovem":   "young",
-		"Adulto":  "adult",
-		"Senil":   "senile",
-	}
-
-	age, ok := ages[text]
-	if !ok {
-		return "", fmt.Errorf("a idade é inválida")
-	}
-
-	return age, nil
-}
-
-func getGender(text string) (string, error) {
-	genders := map[string]string{
-		"Feminino":   "female",
-		"Masculino":  "male",
-		"Indefinido": "undefined",
-	}
-
-	gender, ok := genders[text]
-	if !ok {
-		return "", fmt.Errorf("o gênero é inválido")
-	}
-
-	return gender, nil
 }
 
 func getEnclosuses() (map[string]string, error) {

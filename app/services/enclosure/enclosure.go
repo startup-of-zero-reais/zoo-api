@@ -7,7 +7,7 @@ import (
 
 type Enclosure interface {
 	Create(requests.CreateEnclosure) (models.Enclosure, error)
-
+	CreateListEnclosure(encloures []models.Enclosure) error
 	List(identification string) (int64, []models.Enclosure, error)
 }
 
