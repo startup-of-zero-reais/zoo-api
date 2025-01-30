@@ -61,19 +61,19 @@ func (a *animalsStrategy) StartImport(is models.ImportStatus) error {
 		}
 
 		animal.Origin = row[2]
-		_, err = getGender(row[3])
+		gender, err := getGender(row[3])
 		if err != nil {
 			facades.Log().Errorf("failed to get correctly gender: %v", err)
 			animal.Reason = "O Sexo do animal deve ser informado"
 		}
-		animal.Gender = row[3]
+		animal.Gender = gender
 
-		_, err = getAge(row[5])
+		age, err := getAge(row[5])
 		if err != nil {
 			facades.Log().Errorf("failed to get correctly age: %v", err)
 			animal.Reason = "A Idade do animal deve ser informada"
 		}
-		animal.Age = row[5]
+		animal.Age = age
 
 		animal.BornDate, err = time.Parse("02/01/2006", row[4])
 		if err != nil && animal.Age == "" {
