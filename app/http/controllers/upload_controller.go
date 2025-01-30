@@ -15,6 +15,7 @@ import (
 
 	"github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/facades"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/utils"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
 	"github.com/startup-of-zero-reais/zoo-api/app/services/animal"
@@ -40,18 +41,6 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 
 	if err != nil {
 		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
-	}
-
-	qt := ctx.Request().Query("type")
-
-	ids, err := parseIds(cf.Ids)
-
-	if err != nil {
-		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
-	}
-
-	if qt == "animal" {
-		return r.processAnimal(ctx, ids)
 	}
 
 	file, err := cf.File.Open()
@@ -182,6 +171,21 @@ func (r *UploadController) IndexFiles(ctx http.Context) http.Response {
 		"species":    species,
 		"animals":    animals,
 	})
+}
+
+func (r *UploadController) ConfirmImport(ctx http.Context) http.Response {
+	var cr requests.ConfirmUpload
+
+	aborted := utils.BindAndValidate(ctx, &cr)
+	if aborted {
+		return nil
+	}
+
+	if cr.Type == "animal" {
+		return r.processAnimal(ctx, cr.IDs)
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Confirm uploaded successfully"})
 }
 
 type FileEntry struct {
