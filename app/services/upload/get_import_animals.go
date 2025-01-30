@@ -14,7 +14,6 @@ func (e *uploadImpl) GetImportAnimals(ids []string) ([]models.Animal, error) {
 	var importAnimals []models.ImportAnimals
 
 	err := facades.Orm().Query().Where("id IN ?", ids).Find(&importAnimals)
-
 	if err != nil {
 		facades.Log().Errorf("failed to get import animals %v", err)
 		return nil, responses.ErrUnhandledPgError
@@ -35,7 +34,6 @@ func convertImportAnimalsToAnimals(importAnimals []models.ImportAnimals) ([]mode
 	var animals []models.Animal
 
 	for _, importAnimal := range importAnimals {
-
 		age, err := helpers.GetAge(importAnimal.Age)
 		if err != nil {
 			facades.Log().Errorf("failed to get correctly age: %v", err)
