@@ -19,7 +19,9 @@ func (e *uploadImpl) GetImportAnimals(ids []string) ([]models.Animal, error) {
 		return nil, responses.ErrUnhandledPgError
 	}
 
-	missingIDs := findMissingIDs(ids, importAnimals)
+	missingIDs := helpers.FindMissingIDs(ids, importAnimals, func(ia models.ImportAnimals) string {
+		return ia.ID
+	})
 
 	if len(missingIDs) > 0 {
 		errMsg := fmt.Sprintf("Some import animals were not found: %v", missingIDs)
@@ -62,20 +64,4 @@ func convertImportAnimalsToAnimals(importAnimals []models.ImportAnimals) ([]mode
 	}
 
 	return animals, nil
-}
-func findMissingIDs(requestedIDs []string, foundIDs []models.ImportAnimals) []string {
-	idMap := make(map[string]bool)
-
-	for _, animal := range foundIDs {
-		idMap[animal.ID] = true
-	}
-
-	var missingIDs []string
-	for _, id := range requestedIDs {
-		if !idMap[id] {
-			missingIDs = append(missingIDs, id)
-		}
-	}
-
-	return missingIDs
 }
