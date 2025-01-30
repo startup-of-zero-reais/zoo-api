@@ -12,7 +12,9 @@ type Upload interface {
 	Process(string, requests.CreateFile, models.ImportStatus)
 	GetImportsStatus() ([]models.ImportStatus, error)
 	GetImportAnimals(ids []string) ([]models.Animal, error)
+	GetImportEnclosures(ids []string) ([]models.Enclosure, error)
 	RemoveAnimals(ids []string) error
+	RemoveEnclosures(ids []string) error
 	GetImportFiles(stateID string) ([]models.ImportEnclosure, []models.ImportSpecies, []models.ImportAnimals, error)
 }
 
