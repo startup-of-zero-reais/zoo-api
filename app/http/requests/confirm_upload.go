@@ -17,7 +17,7 @@ func (r *ConfirmUpload) Authorize(ctx http.Context) error {
 func (r *ConfirmUpload) Rules(ctx http.Context) map[string]string {
 	return map[string]string{
 		"ids":   "required|array",
-		"ids.*": "required|uuid",
+		"ids.*": "uuid",
 		"type":  "required|in:animal,species,enclosure",
 	}
 }
