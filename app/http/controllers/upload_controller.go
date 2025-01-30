@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"bytes"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -19,18 +17,21 @@ import (
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
 	"github.com/startup-of-zero-reais/zoo-api/app/services/animal"
+	"github.com/startup-of-zero-reais/zoo-api/app/services/enclosure"
 	"github.com/startup-of-zero-reais/zoo-api/app/services/upload"
 )
 
 type UploadController struct {
-	UploadService upload.Upload
-	AnimalService animal.Animal
+	UploadService    upload.Upload
+	AnimalService    animal.Animal
+	EnclosureService enclosure.Enclosure
 }
 
 func NewUploadController() *UploadController {
 	return &UploadController{
-		UploadService: upload.NewUploadService(),
-		AnimalService: animal.NewAnimalService(),
+		UploadService:    upload.NewUploadService(),
+		AnimalService:    animal.NewAnimalService(),
+		EnclosureService: enclosure.NewEnclosureService(),
 	}
 }
 
@@ -185,6 +186,10 @@ func (r *UploadController) ConfirmImport(ctx http.Context) http.Response {
 		return r.processAnimal(ctx, cr.IDs)
 	}
 
+	if cr.Type == "enclosure" {
+		return r.processEnclosure(ctx, cr.IDs)
+	}
+
 	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Confirm uploaded successfully"})
 }
 
@@ -254,13 +259,26 @@ func (r *UploadController) processAnimal(ctx http.Context, ids []string) http.Re
 	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Import success by model animal"})
 }
 
-func parseIds(idsString string) ([]string, error) {
-	var ids []string
-	err := json.Unmarshal([]byte(idsString), &ids)
-
+func (r *UploadController) processEnclosure(ctx http.Context, ids []string) http.Response {
+	enclosures, err := r.UploadService.GetImportEnclosures(ids)
 	if err != nil {
-		return nil, errors.New("invalid format for ids")
+		facades.Log().Errorf("failed to import array of animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
 	}
 
-	return ids, nil
+	err = r.EnclosureService.CreateListEnclosure(enclosures)
+
+	if err != nil {
+		facades.Log().Errorf("failed to create list enclosures: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.UploadService.RemoveEnclosures(ids)
+
+	if err != nil {
+		facades.Log().Errorf("failed to deleted import enclosures: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Import success by model enclosure"})
 }
