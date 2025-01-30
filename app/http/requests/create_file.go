@@ -13,6 +13,7 @@ type CreateFile struct {
 	File        *multipart.FileHeader `form:"chunk"`
 	Filename    string                `form:"filename"`
 	TotalChunks int                   `form:"total_chunks"`
+	Ids         string                `form:"ids"`
 }
 
 func (r *CreateFile) Authorize(ctx http.Context) error {
