@@ -1,19 +1,13 @@
 package helpers
 
-func FindMissingIDs[T any](requestedIDs []string, foundItems []T, getID func(T) string) []string {
-	idMap := make(map[string]struct{})
+func Filter[T any](items []T, shouldInclude func(int, T) bool) []T {
+	filtered := make([]T, 0, len(items))
 
-	for _, item := range foundItems {
-		id := getID(item)
-		idMap[id] = struct{}{}
-	}
-
-	var missingIDs []string
-	for _, id := range requestedIDs {
-		if _, exists := idMap[id]; !exists {
-			missingIDs = append(missingIDs, id)
+	for i, item := range items {
+		if shouldInclude(i, item) {
+			filtered = append(filtered, item)
 		}
 	}
 
-	return missingIDs
+	return filtered
 }
