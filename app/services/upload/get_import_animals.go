@@ -29,7 +29,7 @@ func (e *uploadImpl) GetImportAnimals(ids []string) ([]models.Animal, error) {
 		return true
 	})
 
-	if len(fa) == 0 {
+	if len(fa) > 0 {
 		errMsg := fmt.Sprintf("No reported animals IDs found: %v", ids)
 		facades.Log().Error(errMsg)
 		return nil, errors.New(errMsg)
