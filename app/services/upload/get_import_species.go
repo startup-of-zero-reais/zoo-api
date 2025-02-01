@@ -19,7 +19,7 @@ func (e *uploadImpl) GetImportSpecies(ids []string) ([]models.Species, error) {
 		return nil, responses.ErrUnhandledPgError
 	}
 
-	filteredIDs := helpers.Filter(importSpecies, func(i int, is models.ImportSpecies) bool {
+	fs := helpers.Filter(importSpecies, func(i int, is models.ImportSpecies) bool {
 		for _, id := range ids {
 			if id == is.ID {
 				return false
@@ -29,7 +29,7 @@ func (e *uploadImpl) GetImportSpecies(ids []string) ([]models.Species, error) {
 		return true
 	})
 
-	if len(filteredIDs) == 0 {
+	if len(fs) == 0 {
 		errMsg := fmt.Sprintf("No reported species IDs found: %v", ids)
 		facades.Log().Error(errMsg)
 		return nil, errors.New(errMsg)
