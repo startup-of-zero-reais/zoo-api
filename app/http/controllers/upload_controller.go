@@ -13,18 +13,28 @@ import (
 
 	"github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/facades"
+	"github.com/startup-of-zero-reais/zoo-api/app/http/middleware/utils"
 	"github.com/startup-of-zero-reais/zoo-api/app/http/requests"
 	"github.com/startup-of-zero-reais/zoo-api/app/models"
+	"github.com/startup-of-zero-reais/zoo-api/app/services/animal"
+	"github.com/startup-of-zero-reais/zoo-api/app/services/enclosure"
+	"github.com/startup-of-zero-reais/zoo-api/app/services/species"
 	"github.com/startup-of-zero-reais/zoo-api/app/services/upload"
 )
 
 type UploadController struct {
-	UploadService upload.Upload
+	UploadService    upload.Upload
+	AnimalService    animal.Animal
+	EnclosureService enclosure.Enclosure
+	SpeciesService   species.Species
 }
 
 func NewUploadController() *UploadController {
 	return &UploadController{
-		UploadService: upload.NewUploadService(),
+		UploadService:    upload.NewUploadService(),
+		AnimalService:    animal.NewAnimalService(),
+		EnclosureService: enclosure.NewEnclosureService(),
+		SpeciesService:   species.NewSpeciesService(),
 	}
 }
 
@@ -32,6 +42,7 @@ func (r *UploadController) Upload(ctx http.Context) http.Response {
 	var cf requests.CreateFile
 
 	err := ctx.Request().Bind(&cf)
+
 	if err != nil {
 		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
 	}
@@ -166,6 +177,29 @@ func (r *UploadController) IndexFiles(ctx http.Context) http.Response {
 	})
 }
 
+func (r *UploadController) ConfirmImport(ctx http.Context) http.Response {
+	var cr requests.ConfirmUpload
+
+	aborted := utils.BindAndValidate(ctx, &cr)
+	if aborted {
+		return nil
+	}
+
+	if cr.Type == "animal" {
+		return r.processAnimal(ctx, cr.IDs)
+	}
+
+	if cr.Type == "enclosure" {
+		return r.processEnclosure(ctx, cr.IDs)
+	}
+
+	if cr.Type == "species" {
+		return r.processSpecies(ctx, cr.IDs)
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Confirm uploaded successfully"})
+}
+
 type FileEntry struct {
 	Name  string
 	Index int
@@ -207,4 +241,70 @@ func sortChunks(chunks []os.DirEntry, uploadID string) []FileEntry {
 	})
 
 	return fileEntries
+}
+
+func (r *UploadController) processAnimal(ctx http.Context, ids []string) http.Response {
+	animals, err := r.UploadService.GetImportAnimals(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to import array of animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.AnimalService.CreateListAnimal(animals)
+	if err != nil {
+		facades.Log().Errorf("failed to create list animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.UploadService.RemoveAnimals(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to deleted import animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Import success by model animal"})
+}
+
+func (r *UploadController) processSpecies(ctx http.Context, ids []string) http.Response {
+	species, err := r.UploadService.GetImportSpecies(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to import array of animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.SpeciesService.CreateListSpecies(species)
+	if err != nil {
+		facades.Log().Errorf("failed to create list species: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.UploadService.RemoveSpecies(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to deleted import species: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Import success by model species"})
+}
+
+func (r *UploadController) processEnclosure(ctx http.Context, ids []string) http.Response {
+	enclosures, err := r.UploadService.GetImportEnclosures(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to import array of animals: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.EnclosureService.CreateListEnclosure(enclosures)
+	if err != nil {
+		facades.Log().Errorf("failed to create list enclosures: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	err = r.UploadService.RemoveEnclosures(ids)
+	if err != nil {
+		facades.Log().Errorf("failed to deleted import enclosures: %v", err)
+		return ctx.Response().Json(http.StatusBadRequest, http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Import success by model enclosure"})
 }

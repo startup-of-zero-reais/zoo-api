@@ -6,6 +6,7 @@ import (
 )
 
 type Animal interface {
+	CreateListAnimal(animals []models.Animal) error
 	Create(requests.CreateAnimal) (models.Animal, error)
 	List(requests.SearchAnimals) (int64, []models.Animal, error)
 }
