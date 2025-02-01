@@ -19,12 +19,17 @@ func (e *uploadImpl) GetImportEnclosures(ids []string) ([]models.Enclosure, erro
 		return nil, responses.ErrUnhandledPgError
 	}
 
-	missingIDs := helpers.FindMissingIDs(ids, importEnclosures, func(ie models.ImportEnclosure) string {
-		return ie.ID
+	filteredIDs := helpers.Filter(importEnclosures, func(i int, ie models.ImportEnclosure) bool {
+		for _, id := range ids {
+			if id == ie.ID {
+				return false
+			}
+		}
+		return true
 	})
 
-	if len(missingIDs) > 0 {
-		errMsg := fmt.Sprintf("Some import enclosures were not found: %v", missingIDs)
+	if len(filteredIDs) == 0 {
+		errMsg := fmt.Sprintf("No reported enclosures IDs found: %v", ids)
 		facades.Log().Error(errMsg)
 		return nil, errors.New(errMsg)
 	}

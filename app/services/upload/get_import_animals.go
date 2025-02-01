@@ -19,12 +19,18 @@ func (e *uploadImpl) GetImportAnimals(ids []string) ([]models.Animal, error) {
 		return nil, responses.ErrUnhandledPgError
 	}
 
-	missingIDs := helpers.FindMissingIDs(ids, importAnimals, func(ia models.ImportAnimals) string {
-		return ia.ID
+	filteredIDs := helpers.Filter(importAnimals, func(i int, ia models.ImportAnimals) bool {
+		for _, id := range ids {
+			if id == ia.ID {
+				return false
+			}
+		}
+
+		return true
 	})
 
-	if len(missingIDs) > 0 {
-		errMsg := fmt.Sprintf("Some import animals were not found: %v", missingIDs)
+	if len(filteredIDs) == 0 {
+		errMsg := fmt.Sprintf("No reported animals IDs found: %v", ids)
 		facades.Log().Error(errMsg)
 		return nil, errors.New(errMsg)
 	}
