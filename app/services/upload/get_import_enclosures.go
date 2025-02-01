@@ -28,7 +28,7 @@ func (e *uploadImpl) GetImportEnclosures(ids []string) ([]models.Enclosure, erro
 		return true
 	})
 
-	if len(fe) == 0 {
+	if len(fe) > 0 {
 		errMsg := fmt.Sprintf("No reported enclosures IDs found: %v", ids)
 		facades.Log().Error(errMsg)
 		return nil, errors.New(errMsg)

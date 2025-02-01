@@ -29,7 +29,7 @@ func (e *uploadImpl) GetImportSpecies(ids []string) ([]models.Species, error) {
 		return true
 	})
 
-	if len(fs) == 0 {
+	if len(fs) > 0 {
 		errMsg := fmt.Sprintf("No reported species IDs found: %v", ids)
 		facades.Log().Error(errMsg)
 		return nil, errors.New(errMsg)
