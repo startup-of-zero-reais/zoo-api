@@ -58,6 +58,8 @@ func authRoutes(authController *controllers.AuthController) func(route.Router) {
 		router.Group(animalRoutes())
 
 		router.Group(uploadRoutes())
+
+		router.Group(importRoutes())
 	}
 }
 
@@ -99,5 +101,13 @@ func uploadRoutes() func(route.Router) {
 		router.Post("/upload/confirm", uploadController.ConfirmImport)
 		router.Get("/upload/imports", uploadController.Index)
 		router.Get("/upload/imports/{id}", uploadController.IndexFiles)
+	}
+}
+
+func importRoutes() func(route.Router) {
+	importController := controllers.NewImportController()
+
+	return func(router route.Router) {
+		router.Put("/import/{id}/enclosure", importController.UpdateEnclosure)
 	}
 }
