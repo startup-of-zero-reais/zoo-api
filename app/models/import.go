@@ -49,8 +49,8 @@ type ImportAnimals struct {
 	Age           string    `gorm:"column:age;default:null;" json:"age"`
 	Gender        string    `gorm:"column:gender;default:null;" json:"gender"`
 	Observation   string    `gorm:"column:observation;default:null;" json:"observation"`
-	SpeciesID     string    `gorm:"column:species_id;type:uuid;default:null" json:"species_id"`
-	EnclosureID   string    `gorm:"column:enclosure_id;type:uuid;default:null" json:"enclosure_id"`
+	SpeciesID     *string   `gorm:"column:species_id;type:uuid;default:null" json:"species_id"`
+	EnclosureID   *string   `gorm:"column:enclosure_id;type:uuid;default:null" json:"enclosure_id"`
 	Reason        string    `gorm:"column:reason;default:null" json:"reason"`
 	StateID       string    `gorm:"column:state_id" json:"state_id"`
 }

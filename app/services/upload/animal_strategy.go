@@ -91,14 +91,14 @@ func (a *animalsStrategy) StartImport(is models.ImportStatus) error {
 
 		enclosure, ok := enclosures[normalize(row[13])]
 		if ok {
-			animal.EnclosureID = enclosure
+			animal.EnclosureID = &enclosure
 		} else {
 			animal.Reason = "O recinto está vazio, por isso não foi possível importar"
 		}
 
 		s, ok := species[normalize(row[9])]
 		if ok {
-			animal.SpeciesID = s
+			animal.SpeciesID = &s
 		} else {
 			animal.Reason = "A espécie do animal está vazia, por isso não foi possível importar"
 		}
