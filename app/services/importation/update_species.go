@@ -10,26 +10,13 @@ import (
 
 func (i importationImpl) UpdateSpecies(re requests.UpdateImportSpecies, ID string) error {
 	var sp models.ImportSpecies
-	var validationErrors []string
 
-	if re.CommonName == "" {
-		validationErrors = append(validationErrors, "Nome comum")
-	}
-	if re.ScientificName == "" {
-		validationErrors = append(validationErrors, "Nome científico")
-	}
-	if re.Kind == "" {
-		validationErrors = append(validationErrors, "Tipo")
-	}
-	if re.TaxonomicOrder == "" {
-		validationErrors = append(validationErrors, "Ordem taxonômica")
-	}
-
-	if len(validationErrors) > 0 {
-		if len(validationErrors) == 1 {
-			sp.Reason = "O campo " + validationErrors[0] + " é obrigatório."
+	missingFields := validateRequiredSpeciesFields(re)
+	if len(missingFields) > 0 {
+		if len(missingFields) == 1 {
+			sp.Reason = "O campo " + missingFields[0] + " é obrigatório."
 		} else {
-			sp.Reason = "Os campos " + helpers.JoinWithAnd(validationErrors) + " são obrigatórios."
+			sp.Reason = "Os campos " + helpers.JoinWithAnd(missingFields) + " são obrigatórios."
 		}
 	} else {
 		sp.Reason = ""
@@ -57,4 +44,23 @@ func (i importationImpl) UpdateSpecies(re requests.UpdateImportSpecies, ID strin
 	}
 
 	return nil
+}
+
+func validateRequiredSpeciesFields(re requests.UpdateImportSpecies) []string {
+	var missing []string
+
+	if re.CommonName == "" {
+		missing = append(missing, "Nome comum")
+	}
+	if re.ScientificName == "" {
+		missing = append(missing, "Nome científico")
+	}
+	if re.Kind == "" {
+		missing = append(missing, "Tipo")
+	}
+	if re.TaxonomicOrder == "" {
+		missing = append(missing, "Ordem taxonômica")
+	}
+
+	return missing
 }
