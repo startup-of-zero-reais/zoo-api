@@ -11,7 +11,7 @@ func (i importationImpl) UpdateEnclosure(re requests.UpdateImportEnclosure, ID s
 	var ie models.ImportEnclosure
 
 	if re.Identification == "" {
-		ie.Reason = "A identificação do recinto tem que ta preenchido."
+		ie.Reason = "A identificação do recinto deve ser preenchida."
 	} else {
 		ie.Reason = ""
 	}
