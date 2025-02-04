@@ -64,8 +64,8 @@ func convertImportAnimalsToAnimals(importAnimals []models.ImportAnimals) ([]mode
 			BornDate:      importAnimal.BornDate,
 			Age:           age,
 			Gender:        gender,
-			SpeciesID:     importAnimal.SpeciesID,
-			EnclosureID:   importAnimal.EnclosureID,
+			SpeciesID:     helpers.DerefString(importAnimal.SpeciesID),
+			EnclosureID:   helpers.DerefString(importAnimal.EnclosureID),
 		})
 	}
 
