@@ -6,6 +6,7 @@ import (
 
 type Importation interface {
 	UpdateEnclosure(re requests.UpdateImportEnclosure, ID string) error
+	UpdateSpecies(re requests.UpdateImportSpecies, ID string) error
 }
 
 type importationImpl struct {
