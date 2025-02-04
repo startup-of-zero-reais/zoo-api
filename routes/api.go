@@ -109,5 +109,6 @@ func importRoutes() func(route.Router) {
 
 	return func(router route.Router) {
 		router.Put("/import/{id}/enclosure", importController.UpdateEnclosure)
+		router.Put("import/{id}/species", importController.UpdateSpecies)
 	}
 }

@@ -33,3 +33,21 @@ func (r *ImportController) UpdateEnclosure(ctx http.Context) http.Response {
 
 	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Update Import Enclosure success!!"})
 }
+
+func (r *ImportController) UpdateSpecies(ctx http.Context) http.Response {
+	var ie requests.UpdateImportSpecies
+
+	id := ctx.Request().Route("id")
+
+	err := ctx.Request().Bind(&ie)
+	if err != nil {
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
+	}
+
+	err = r.Importation.UpdateSpecies(ie, id)
+	if err != nil {
+		return ctx.Response().Status(http.StatusInternalServerError).Json(http.Json{"error": err.Error()})
+	}
+
+	return ctx.Response().Json(http.StatusOK, http.Json{"message": "Update Import Species success!!"})
+}
