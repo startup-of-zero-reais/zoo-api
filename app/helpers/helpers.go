@@ -26,3 +26,17 @@ func JoinWithAnd(fields []string) string {
 		return strings.Join(fields[:len(fields)-1], ", ") + " e " + fields[len(fields)-1]
 	}
 }
+
+func DerefString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+func ToNullableString(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
+}
